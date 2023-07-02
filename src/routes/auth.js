@@ -72,6 +72,9 @@ router.post("/register", async (req, res) => {
       fullname,
       email,
       password,
+      phoneNumber: internationalNumber,
+      isAdmin: false,
+      isEmailVerified: false,
     });
 
     await newUser.save();
