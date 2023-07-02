@@ -74,6 +74,13 @@ router.post("/register", async (req, res) => {
       password,
     });
 
+    await newUser.save();
+
+    return res.status(201).json({
+      message: "User created successfully",
+      status: "success",
+    });
+
     //   va;idate phone number using google libphonenumber
   } catch (error) {
     console.log(error);
