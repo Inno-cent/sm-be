@@ -3,6 +3,10 @@ const { default: isEmail } = require("validator/lib/isEmail");
 const Users = require("../models/user.model");
 const { PhoneNumberUtil, PhoneNumberFormat } = require("google-libphonenumber");
 const { hashSync, genSaltSync } = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const router = Router();
 
@@ -16,7 +20,12 @@ router.post("/register", async (req, res) => {
 
     email = email.toLowerCase();
 
-    if (!fullname || !email || !password || !phoneNumber) {
+    if (
+      !fullname?.trim() ||
+      !email?.trim() ||
+      !password?.trim() ||
+      !phoneNumber?.trim()
+    ) {
       return res.status(400).json({
         message: "All fields are required",
       });
@@ -89,6 +98,57 @@ router.post("/register", async (req, res) => {
     console.log(error);
     return res.status(500).json({
       message: "Internal server error",
+    });
+  }
+});
+
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email.trim() || !password.trim()) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+
+    const user = await Users.find({ email: email.toLowerCase() });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid email or password",
+      });
+    }
+
+    const isPasswordValid = compareSync(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        message: "Invalid email or password",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        _id: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "30m",
+      }
+    );
+
+    return res.status(200).json({
+      message: "Login successful",
+      status: "success",
+      token,
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+      status: "error",
     });
   }
 });
