@@ -13,13 +13,6 @@ const router = Router();
 router.post("/register", async (req, res) => {
   try {
     let { fullname, email, password, phoneNumber } = req.body;
-
-    if (phoneNumber[0] !== "+") {
-      phoneNumber = "+" + phoneNumber;
-    }
-
-    email = email.toLowerCase();
-
     if (
       !fullname?.trim() ||
       !email?.trim() ||
@@ -30,6 +23,12 @@ router.post("/register", async (req, res) => {
         message: "All fields are required",
       });
     }
+
+    if (phoneNumber[0] !== "+") {
+      phoneNumber = "+" + phoneNumber;
+    }
+
+    email = email.toLowerCase();
 
     if (password.length < 6) {
       return res.status(400).json({
