@@ -16,17 +16,17 @@ router.post("/register", async (req, res) => {
     if (
       !fullname?.trim() ||
       !email?.trim() ||
-      !password?.trim() ||
-      !phoneNumber?.trim()
+      !password?.trim()
+      // !phoneNumber?.trim()
     ) {
       return res.status(400).json({
         message: "All fields are required",
       });
     }
 
-    if (phoneNumber[0] !== "+") {
-      phoneNumber = "+" + phoneNumber;
-    }
+    // if (phoneNumber[0] !== "+") {
+    //   phoneNumber = "+" + phoneNumber;
+    // }
 
     email = email.toLowerCase();
 
@@ -42,21 +42,24 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    const phoneUtil = PhoneNumberUtil.getInstance();
-    const number = phoneUtil.parse(phoneNumber);
-    if (!phoneUtil.isValidNumber(number)) {
-      return res.status(400).json({
-        message: "Phone number is not valid",
-      });
-    }
+    // const phoneUtil = PhoneNumberUtil.getInstance();
+    // const number = phoneUtil.parse(phoneNumber);
+    // if (!phoneUtil.isValidNumber(number)) {
+    //   return res.status(400).json({
+    //     message: "Phone number is not valid",
+    //   });
+    // }
 
-    const internationalNumber = phoneUtil.format(
-      number,
-      PhoneNumberFormat.E164
-    );
+    // const internationalNumber = phoneUtil.format(
+    //   number,
+    //   PhoneNumberFormat.E164
+    // );
 
     const userDetails = await Users.findOne({
-      $or: [{ email }, { phoneNumber: internationalNumber }],
+      $or: [
+        { email },
+        // { phoneNumber: internationalNumber }
+      ],
     });
 
     if (userDetails) {
@@ -66,11 +69,11 @@ router.post("/register", async (req, res) => {
         });
       }
 
-      if (userDetails.phoneNumber === internationalNumber) {
-        return res.status(400).json({
-          message: "Phone number already used by another user",
-        });
-      }
+      // if (userDetails.phoneNumber === internationalNumber) {
+      //   return res.status(400).json({
+      //     message: "Phone number already used by another user",
+      //   });
+      // }
     }
 
     const salt = genSaltSync(10);
@@ -80,7 +83,7 @@ router.post("/register", async (req, res) => {
       fullname,
       email,
       password,
-      phoneNumber: internationalNumber,
+      // phoneNumber: internationalNumber,
       isAdmin: false,
       isEmailVerified: false,
     });
