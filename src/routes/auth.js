@@ -2,7 +2,7 @@ const { Router } = require("express");
 const { default: isEmail } = require("validator/lib/isEmail");
 const Users = require("../models/user.model");
 const { PhoneNumberUtil, PhoneNumberFormat } = require("google-libphonenumber");
-const { hashSync, genSaltSync } = require("bcrypt");
+const { hashSync, genSaltSync, compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 
