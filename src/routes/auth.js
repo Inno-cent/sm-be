@@ -108,20 +108,19 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email.trim() || !password.trim()) {
+    if (!email?.trim() || !password?.trim()) {
       return res.status(400).json({
         message: "All fields are required",
       });
     }
 
-    const user = await Users.find({ email: email.toLowerCase() });
+    const user = await Users.findOne({ email: email.toLowerCase() });
 
     if (!user) {
       return res.status(400).json({
         message: "Invalid email or password",
       });
     }
-
     const isPasswordValid = compareSync(password, user.password);
 
     if (!isPasswordValid) {
