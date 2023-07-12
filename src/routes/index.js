@@ -6,6 +6,7 @@ const authMiddleware = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
+    console.log("no fuvking token");
     return res.status(401).json({
       message: "You must be logged in",
     });
