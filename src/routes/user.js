@@ -1,8 +1,9 @@
 const { Router } = require("express");
+const Users = require("../models/user.model");
 
 const router = Router();
 
-router.use("/", (req, res) => {
+router.use("/", (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
       message: "You must be logged in",
