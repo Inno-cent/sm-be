@@ -8,11 +8,12 @@ router.use("/", (req, res) => {
       message: "You must be logged in",
     });
   }
+  return next();
 });
 
 router.get("/", async (req, res) => {
   try {
-    const userDetails = await Users.findById(req.user._id);
+    const userDetails = await Users.findById(req?.user?._id);
 
     return res.status(200).json({
       message: "User details retrieved successfully",
